@@ -37,6 +37,21 @@ def test():
 #     return render_template("index.html", name = py_name)
 
 
+@app.route("/wheather") 
+def wheather():
+    name = "晴れ"
+    return render_template("wheather.html",name = name)
+
+# 新しい/wheatherというルートを作ってください
+# 関数名はwheather()
+# templatesフォルダの中にwheather.htmlを作成してください
+# 戻り値でテンプレート(wheather.html)を表示させてください
+# wheather.htmlには今日の天気は◯◯ですと表示するHTMLを書きましょう
+# ◯◯には、python側作られたwheatherという変数の値を埋め込んで表示してください
+# できた方はweather.htmlにFlask初日の感想を書いてTweetして
+# コミットとプッシュをしてから、アンケート記入次第終了です！
+
+
 
 
 if __name__ == "__main__":
