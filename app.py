@@ -1,4 +1,5 @@
 # Flaskからimportしてflaskを使えるようにする
+from os import scandir
 from flask import Flask,render_template
 from werkzeug.utils import redirect
 
@@ -37,11 +38,6 @@ def test():
 #     return render_template("index.html", name = py_name)
 
 
-@app.route("/wheather") 
-def wheather():
-    name = "晴れ"
-    return render_template("wheather.html",name = name)
-
 # 新しい/wheatherというルートを作ってください
 # 関数名はwheather()
 # templatesフォルダの中にwheather.htmlを作成してください
@@ -51,6 +47,23 @@ def wheather():
 # できた方はweather.htmlにFlask初日の感想を書いてTweetして
 # コミットとプッシュをしてから、アンケート記入次第終了です！
 
+@app.route("/wheather") 
+def wheather():
+    name = "晴れ"
+    return render_template("wheather.html",name = name)
+
+
+# 新しくブランチを作ってください git checkout -b suzu ←ブランチの作成と移動を同時に行えるよ！
+# 新しい/colorというルートを作ってください
+# 関数名はcolor()
+# 戻り値でテンプレート(color.html)を表示させてください
+# color.htmlには今日のラッキーカラーは◯◯ですと表示するHTMLを書きましょう
+# ◯◯には、python側作られたpy_colorという変数の値をhtml_colorに埋め込んで表示してください
+
+@app.route("/color") 
+def color():
+    name = "青"
+    return render_template("color.html",name = name)
 
 
 
