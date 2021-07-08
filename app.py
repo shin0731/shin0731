@@ -1,5 +1,6 @@
 # Flaskからimportしてflaskを使えるようにする
 from os import scandir
+import sqlite3, random
 from flask import Flask,render_template
 from werkzeug.utils import redirect
 
@@ -60,10 +61,27 @@ def wheather():
 # color.htmlには今日のラッキーカラーは◯◯ですと表示するHTMLを書きましょう
 # ◯◯には、python側作られたpy_colorという変数の値をhtml_colorに埋め込んで表示してください
 
+# @app.route("/color") 
+# def color():
+#     name = "青"
+#     return render_template("color.html",name = name)
+# データベースからデータを引っ張ってくる
+
+
 @app.route("/color") 
 def color():
-    name = "青"
-    return render_template("color.html",name = name)
+    conn = sqlite3.connect("color.db")
+    c = conn.cursor()
+    c.execute("SELECT colors from colors ")
+    
+    py_color = c.fetchall()
+    print(py_color)
+    py_color = random.choice(py_color)[0]
+    c.close()
+    return render_template("color.html",html_color = py_color)
+
+
+
 
 
 
