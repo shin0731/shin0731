@@ -67,6 +67,9 @@ def color():
 
 
 
+
+
+
 if __name__ == "__main__":
 # Flask が持っている開発用サーバーを、実行します。必ず最後に！
     app.run(debug=True)
