@@ -81,8 +81,15 @@ def color():
     return render_template("color.html",html_color = py_color)
 
 
+# 新しいブランチsuzuを作成して移動する
+# 新しいルート/addを作る
+# /addでは関数add_getを実行するように指定する
+# add関数では戻り値としてadd.htmlというファイルを表示する
+#add.htmlにはh1タグで新規追加とかいておいてください！ 
 
-
+@app.route("/add") 
+def add_get():
+    return render_template("add.html")
 
 
 
