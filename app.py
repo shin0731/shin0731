@@ -176,7 +176,7 @@ def del_task(id):
     return redirect("/list")
 
 
-@app.errorhndler(404)
+@app.errorhandler(404)
 def notfound(code):
     return "404エラー"
 
