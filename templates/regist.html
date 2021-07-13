@@ -4,10 +4,20 @@
 {% block content %}
 
     <h1>新規会員登録</h1>
-<form action="/add" method = "post">
-    <input type="text" name = "task">
-    <input type="submit" name = "submit">
+<form action="/regist" method = "post">
+    <input type="text" name = "username" placeholder="ここに名前を入力">
+    <input type="password" name = "password">
+    <input type="submit" name = "submit" value="登録するよ">
 </form>
+
+<!-- regist.htmlに会員登録用のフォームを作成してください。
+1）/registというルートの作成(メソッドはGET)
+2）ルート内でregist_getという関数の作成
+3）戻り値でregist.htmlを表示する
+4）regist.htmlはbaseと紐づける
+5）h1タグで新規会員登録と表示
+6）/registにアクセスしてページが表示されたらOK
+※/add の　GETメソッドの処理を参考にするよいいよ！ -->
 
 
 {% endblock %}

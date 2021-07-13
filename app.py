@@ -1,11 +1,12 @@
 # Flaskからimportしてflaskを使えるようにする
 from os import scandir
 import sqlite3, random
-from flask import Flask,render_template ,request,redirect
+from flask import Flask,render_template ,request,redirect,session
 from werkzeug.utils import redirect
 
 # app っていう名前でFlaskアプリをつくっていくよ～みたいな
 app = Flask(__name__)
+app.secret_key = "sunabacokoza"
 
 @app.route("/")
 def top():
@@ -190,6 +191,87 @@ def del_task(id):
 @app.route("/regist" ,methods=["GET"]) 
 def regist_get():
     return render_template("regist.html")
+
+
+# 会員登録をしよう！
+# 1）/registのPOSTメソッドのルートをつくる
+# 2）関数はregist_post()
+# 3)フォームからusernameの値を取得し変数nameに代入
+# 4）フォームからpasswordの値を取得し変数passwordに代入
+# 5）データベースに接続＆操作
+# 6）SQL文を実行（users テーブルにユーザー情報を追加する）
+# 7）データベースの保存
+# 8）データベースと接続解除
+# 9）戻り値で 「会員登録できました」という文字を表示
+# ※/addのPOSTメソッドが少し参考になるかも？
+
+@app.route("/regist" ,methods=["POST"]) 
+def regist_post():
+    name = request.form.get("username")
+    password = request.form.get("password")
+    conn = sqlite3.connect("flasktest.db")
+    c = conn.cursor()
+    c.execute("INSERT INTO users VALUES (null,?,?)",(name,password))
+    conn.commit() #データベースの変更を保存
+    c.close()  #データベースと接続解除。操作を終了
+    return redirect("/list")
+
+
+
+# ログインぺーじを作ろう！
+# loginページを表示するルートを作ろう
+# 1）/login のGETメソッドで動くルートを作ろう
+# 2）関数はlogin_get
+# 3)戻り値としてlogin.htmlを表示する
+# 4）login.htmlはbaseと紐づく
+# 5）login.htmlにh1タグでログインしてくださいと表示
+# 6）ボタンはログインと表示
+# ※/registとかregist.htmlをコピーするとはやいよ！
+
+@app.route("/login" ,methods=["GET"]) 
+def login_get():
+    return render_template("login.html")
+
+
+
+# ログイン処理をしよう！
+# ログインボタンが押されたらユーザーをログインさせる機能作ろう
+# 1）/login のPOSTメソッドで動くルートを作ろう
+# 2）関数はlogin_post
+# 3)フォームからusernameの値を取得し変数nameに代入
+# 4）フォームからpasswordの値を取得し変数passwordに代入
+# 5）データベースに接続＆操作できるようにする
+# 6）SQL文を実行
+# （入力されたnameとpasswordの情報を元にusers テーブルにある
+# userのidを取得）
+# 7）データベースと接続解除
+# 8)戻り値として/listを表示する
+# ※/registのpostめそっどを参考にするといいよ！
+
+@app.route("/login" ,methods=["POST"]) 
+def login_post():
+    name = request.form.get("username")
+    password = request.form.get("password")
+    conn = sqlite3.connect("flasktest.db")
+    c = conn.cursor()
+    c.execute("SELECT id FROM users WHERE name =? and pass = ?",(name,password))
+    user_id =c.fetchone()
+    c.close()  
+    if user_id is None :
+        return render_template("login.html")
+    else:
+        session["user_id"] = user_id[0]
+    return redirect("/list")
+
+
+@app.route("/logout" ,methods=["GET"]) 
+def logout():
+    session.pop("user_id",None)
+    return redirect("/login")
+
+
+
+
 
 
 @app.errorhandler(404)
