@@ -92,13 +92,14 @@ def add_get():
     return render_template("add.html")
 
 
-@app.route("/add" ,methods=["post"]) 
+@app.route("/add" ,methods=["POST"]) 
 def add_post():
     #フォームからtaskと名前のついたデータを取得して変数taskに代入
     task = request.form.get("task")
     conn = sqlite3.connect("flasktest.db")
     c = conn.cursor()
     c.execute("INSERT INTO tasks VALUES(null,?)",(task,))
+    print(task)
     conn.commit() #データベースの変更を保存
     c.close()  #データベースと接続解除。操作を終了
 
@@ -170,10 +171,25 @@ def edit_post():
 def del_task(id):
     conn = sqlite3.connect("flasktest.db")
     c = conn.cursor()
-    c.execute("DELETE from WHERE id = ?",(id,))
+    c.execute("DELETE from tasks WHERE id = ?",(id,))
     conn.commit() #データベースの変更を保存
     c.close()  #データベースと接続解除。操作を終了
     return redirect("/list")
+
+
+# 入力フォームを作ってみよう！
+# regist.htmlに会員登録用のフォームを作成してください。
+# 1）/registというルートの作成(メソッドはGET)
+# 2）ルート内でregist_getという関数の作成
+# 3）戻り値でregist.htmlを表示する
+# 4）regist.htmlはbaseと紐づける
+# 5）h1タグで新規会員登録と表示
+# 6）/registにアクセスしてページが表示されたらOK
+# ※/add の GETメソッドの処理を参考にするよいいよ！
+
+@app.route("/regist" ,methods=["GET"]) 
+def regist_get():
+    return render_template("regist.html")
 
 
 @app.errorhandler(404)
