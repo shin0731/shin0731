@@ -1,7 +1,7 @@
 # Flaskからimportしてflaskを使えるようにする
 from os import scandir
 import sqlite3, random
-from flask import Flask,render_template
+from flask import Flask,render_template ,request,redirect
 from werkzeug.utils import redirect
 
 # app っていう名前でFlaskアプリをつくっていくよ～みたいな
@@ -21,9 +21,9 @@ def hello(name):
 def helloWorld():
     return "Hello World."
 
-@app.route("/<name>") 
-def greet(name):
-    return name + "さん、はろー！！"
+# @app.route("/<name>") 
+# def greet(name):
+#     return name + "さん、はろー！！"
 
 # 新しいルートを作成
 @app.route("/test") 
@@ -87,10 +87,98 @@ def color():
 # add関数では戻り値としてadd.htmlというファイルを表示する
 #add.htmlにはh1タグで新規追加とかいておいてください！ 
 
-@app.route("/add") 
+@app.route("/add" ,methods=["GET"]) 
 def add_get():
     return render_template("add.html")
 
+
+@app.route("/add" ,methods=["post"]) 
+def add_post():
+    #フォームからtaskと名前のついたデータを取得して変数taskに代入
+    task = request.form.get("task")
+    conn = sqlite3.connect("flasktest.db")
+    c = conn.cursor()
+    c.execute("INSERT INTO tasks VALUES(null,?)",(task,))
+    conn.commit() #データベースの変更を保存
+    c.close()  #データベースと接続解除。操作を終了
+
+    return redirect("/list")
+
+
+#     一覧ページを表示しよう！
+# 1）/listというルートの作成(メソッドはGET)
+# 2）ルート内でtask_listという関数の作成
+# 3）戻り値でlist.htmlを表示する
+# 4）list.htmlはbaseと紐づける
+# 5）h1タグでタスク一覧と表示
+# 6）/listにアクセスしてページが表示されたらOK
+
+@app.route("/list" ,methods=["GET"]) 
+def task_list():
+    conn = sqlite3.connect("flasktest.db")
+    c = conn.cursor()
+    c.execute("select id,task from tasks ")
+    task_list = []
+    for row in c.fetchall(): #検索結果、全件とってくる
+        task_list.append({"id":row[0],"task":row[1]})
+    c.close()  #データベースと接続解除。操作を終了
+    return render_template("list.html", task_list = task_list)
+
+# 新しくルートを作ってください名前はdel/<id>
+# 関数名はdel_task()引数でURLからidを受け取る
+# 処理はデータベースに接続して
+# データを操作できるようにして
+# sql文で投稿idを用いて投稿を削除するコードをかいて
+# データを変更したのでデータベースの変更を保存するコードを書く
+# データベースと接続を解除する
+# 戻り値として/listに戻る
+
+@app.route("/edit/<id>" ,methods=["GET"]) 
+def edit(id):
+    conn = sqlite3.connect("flasktest.db")
+    c = conn.cursor()
+    c.execute("select task from tasks WHERE id = ?",(id,))
+    task = c.fetchone()[0]
+    c.close()
+    item = {"id":id,"task":task}
+    return render_template("edit.html", item = item)
+
+@app.route("/edit" ,methods=["post"]) 
+def edit_post():
+    task = request.form.get("task")
+    id = request.form.get("task_id")
+    conn = sqlite3.connect("flasktest.db")
+    c = conn.cursor()
+    c.execute("UPDATE tasks SET task = ? WHERE id = ?",(task,id))
+    conn.commit() #データベースの変更を保存
+    c.close()  #データベースと接続解除。操作を終了
+
+    return redirect("/list")
+
+
+
+# 新しくルートを作ってください名前はdel/<id>
+# 関数名はdel_task()引数でURLからidを受け取る
+# 処理はデータベースに接続して
+# データを操作できるようにして
+# sql文で投稿idを用いて投稿を削除するコードをかいて
+# データを変更したのでデータベースの変更を保存するコードを書く
+# データベースと接続を解除する
+# 戻り値として/listに戻る
+
+@app.route("/del/<id>" ) 
+def del_task(id):
+    conn = sqlite3.connect("flasktest.db")
+    c = conn.cursor()
+    c.execute("DELETE from WHERE id = ?",(id,))
+    conn.commit() #データベースの変更を保存
+    c.close()  #データベースと接続解除。操作を終了
+    return redirect("/list")
+
+
+@app.errorhndler(404)
+def notfound(code):
+    return "404エラー"
 
 
 

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+{% extends "base.html" %}
+
+{% block content %}
+
+    <h1>タスク一覧</h1>
+<table border = "1">
+    {% for item in task_list %}
+    <tr>
+        <td>タスクID：{{ item["id"] }}</td>
+        <td>タスク：{{ item["task"] }}</td>
+        <td><a href='/edit/{{ item["id"] }}'>編集</a></td>
+        <td><a href='/del/{{ item["id"] }}'>削除</a></td>
+    </tr>
+    {% endfor %}
+</table>
+<a href="/add">タスクの追加</a>
+
+
+
+{% endblock %}
